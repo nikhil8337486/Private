@@ -10,11 +10,11 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
         }
 
-        // ✅ Correct API URL
+        // ✅ API URL (Cloudflare Workers)
         const apiUrl = `https://vehicleapiinformation.raghavnikhil015.workers.dev/?numberPlate=${numberPlate}`;
 
         try {
-            resultDiv.innerHTML = "<p>Fetching data...</p>"; // Show loading text
+            resultDiv.innerHTML = "<p>Fetching data...</p>"; // ⏳ Show loading text
             const response = await fetch(apiUrl, {
                 method: "GET",
                 headers: {
@@ -26,7 +26,16 @@ document.addEventListener("DOMContentLoaded", function () {
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }
 
-            const data = await response.json();
+            const textData = await response.text(); // 👈 First, get raw response as text
+
+            let data;
+            try {
+                data = JSON.parse(textData); // ✅ Try parsing JSON
+            } catch (error) {
+                console.error("Invalid JSON response:", textData);
+                resultDiv.innerHTML = "<p style='color: red;'>Invalid response format!</p>";
+                return;
+            }
 
             // ✅ Check if API returned valid data
             if (!data || Object.keys(data).length === 0) {
