@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", function () {
-    const searchBtn = document.getElementById("searchBtn");
-    const numberInput = document.getElementById("numberPlate");
+    const searchBtn = document.getElementById("search-btn");  // ✅ Correct ID
+    const numberInput = document.getElementById("vehicle-number");  // ✅ Correct ID
     const resultDiv = document.getElementById("result");
 
     searchBtn.addEventListener("click", async function () {
@@ -15,18 +15,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
         try {
             resultDiv.innerHTML = "<p>Fetching data...</p>"; // ⏳ Show loading text
-            const response = await fetch(apiUrl, {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-            });
+            const response = await fetch(apiUrl);
 
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }
 
-            const textData = await response.text(); // 👈 First, get raw response as text
+            const textData = await response.text(); // First, get raw response as text
 
             let data;
             try {
@@ -43,16 +38,22 @@ document.addEventListener("DOMContentLoaded", function () {
                 return;
             }
 
-            // ✅ Formatting output properly
+            // ✅ Formatting output properly with Icons (As per UI in image)
             resultDiv.innerHTML = `
-                <h2>Vehicle Details</h2>
-                <p><strong>Registration Number:</strong> ${data.registrationNumber || "N/A"}</p>
-                <p><strong>Owner Name:</strong> ${data.ownerName || "N/A"}</p>
-                <p><strong>Manufacturer:</strong> ${data.manufacturer || "N/A"}</p>
-                <p><strong>Model:</strong> ${data.model || "N/A"}</p>
-                <p><strong>Fuel Type:</strong> ${data.fuelType || "N/A"}</p>
-                <p><strong>Registration Date:</strong> ${data.registrationDate || "N/A"}</p>
-                <p><strong>Address:</strong> ${data.address || "N/A"}</p>
+                <h2>🚗 Vehicle Details</h2>
+                <p>🔹 <strong>Registration Number:</strong> ${data.registrationNumber || "N/A"}</p>
+                <p>🔹 <strong>Registration Authority:</strong> ${data.registrationAuthority || "N/A"}</p>
+                <p>🔹 <strong>Registration Date:</strong> ${data.registrationDate || "N/A"}</p>
+                <p>🔹 <strong>Owner Name:</strong> ${data.ownerName || "N/A"}</p>
+                <p>🔹 <strong>Father's Name:</strong> ${data.fatherName || "N/A"}</p>
+                <p>🔹 <strong>Address:</strong> ${data.address || "N/A"}</p>
+
+                <h2>🚗 Vehicle Specifications</h2>
+                <p>🔧 <strong>Manufacturer:</strong> ${data.manufacturer || "N/A"}</p>
+                <p>🚗 <strong>Model:</strong> ${data.model || "N/A"}</p>
+                <p>📌 <strong>Variant:</strong> ${data.variant || "N/A"}</p>
+                <p>⛽ <strong>Fuel Type:</strong> ${data.fuelType || "N/A"}</p>
+                <p>🪑 <strong>Seat Capacity:</strong> ${data.seatCapacity || "N/A"}</p>
             `;
         } catch (error) {
             console.error("Error fetching data:", error);
