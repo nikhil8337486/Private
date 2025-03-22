@@ -1,70 +1,84 @@
-document.addEventListener("DOMContentLoaded", function () {
-    console.log("🚀 Script Loaded!");  // ✅ Check if script is running
+async function getVehicleDetails() {
+    let numberPlate = document.getElementById("numberPlate").value;
+    let apiUrl = `api-proxy.php?numberPlate=${numberPlate}`;
 
-    const searchBtn = document.getElementById("search-btn");  // ✅ Correct ID
-    const numberInput = document.getElementById("vehicle-number");  // ✅ Correct ID
-    const resultDiv = document.getElementById("result");
+    try {
+        let response = await fetch(apiUrl);
+        let data = await response.json();
 
-    if (!searchBtn || !numberInput || !resultDiv) {
-        console.error("❌ Button or Input field not found!");
-        return;
-    }
+        if (data.statusCode === 200) {
+            let vehicle = data.response;
+            let resultContainer = document.getElementById("result");
 
-    searchBtn.addEventListener("click", async function () {
-        console.log("🔍 Search button clicked!");  // ✅ Debugging log
+            // 🎨 **Styled Output Format**
+            let detailsHTML = `
+                <div class="section">
+                    <h3>🚗 VEHICLE DETAILS</h3>
+                    <p>🔹 <b>Registration Number:</b> ${vehicle.regNo || "N/A"}</p>
+                    <p>🔹 <b>Registration Authority:</b> ${vehicle.regAuthority || "N/A"}</p>
+                    <p>🔹 <b>Registration Date:</b> ${vehicle.regDate || "N/A"}</p>
+                    <p>🔹 <b>Owner Name:</b> ${vehicle.owner || "N/A"}</p>
+                    <p>🔹 <b>Father's Name:</b> ${vehicle.ownerFatherName || "N/A"}</p>
+                    <p>🔹 <b>Address:</b> ${vehicle.presentAddress || "N/A"}</p>
+                </div>
 
-        const numberPlate = numberInput.value.trim();
-        if (numberPlate === "") {
-            console.warn("⚠️ Empty input!");
-            resultDiv.innerHTML = "<p style='color: red;'>Please enter a number plate!</p>";
-            return;
-        }
+                <div class="section">
+                    <h3>🚘 VEHICLE SPECIFICATIONS</h3>
+                    <p>🛠 <b>Manufacturer:</b> ${vehicle.manufacturer || "N/A"}</p>
+                    <p>🚘 <b>Model:</b> ${vehicle.vehicle || "N/A"}</p>
+                    <p>📌 <b>Variant:</b> ${vehicle.variant || "N/A"}</p>
+                    <p>⛽ <b>Fuel Type:</b> ${vehicle.fuelType || "N/A"}</p>
+                    <p>🪑 <b>Seat Capacity:</b> ${vehicle.seatCapacity || "N/A"}</p>
+                </div>
 
-        // ✅ API URL
-        const apiUrl = `https://vehicleapiinformation.raghavnikhil015.workers.dev/?numberPlate=${numberPlate}`;
-        console.log(`🌍 Fetching data from: ${apiUrl}`);
+                <div class="section">
+                    <h3>⚙️ TECHNICAL DETAILS</h3>
+                    <p>🔧 <b>Chassis Number:</b> ${vehicle.chassis || "N/A"}</p>
+                    <p>🔧 <b>Engine Number:</b> ${vehicle.engine || "N/A"}</p>
+                    <p>📏 <b>Cubic Capacity:</b> ${vehicle.cubicCapacity || "N/A"} cc</p>
+                </div>
 
-        try {
-            resultDiv.innerHTML = "<p>Fetching data...</p>"; // ⏳ Loading text
-            const response = await fetch(apiUrl);
+                <div class="section">
+                    <h3>📑 REGISTRATION & INSURANCE</h3>
+                    <p>🛡 <b>Insurance Company:</b> ${vehicle.insuranceCompanyName || "N/A"}</p>
+                    <p>🔖 <b>Policy Number:</b> ${vehicle.insurancePolicyNumber || "N/A"}</p>
+                    <p>📆 <b>Insurance Valid Till:</b> ${vehicle.insuranceUpto || "N/A"}</p>
+                </div>
 
-            if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
-            }
+                <div class="section">
+                    <h3>💰 FINANCER DETAILS</h3>
+                    <p>🏦 <b>Financer:</b> ${vehicle.financerName || "N/A"}</p>
+                    <p>💵 <b>Financed:</b> Y</p>
+                </div>
 
-            const textData = await response.text();
-            console.log("📜 Raw Response:", textData);  // ✅ Print raw response
+                <div class="section">
+                    <h3>📍 OTHER INFORMATION</h3>
+                    <p>🏭 <b>Manufacturing Year:</b> ${vehicle.manufacturingYear || "N/A"}</p>
+                    <p>📌 <b>Pincode:</b> ${vehicle.pincode || "N/A"}</p>
+                    <p>🕒 <b>Last Updated:</b> ${vehicle.eDate || "N/A"}</p>
+                    <p>📅 <b>Data Status:</b> ${vehicle.dataStatus || "N/A"}</p>
+                    <p>🛞 <b>Vehicle Type:</b> ${vehicle.vehicleType || "N/A"}</p>
+                    <p>📅 <b>Reg Date:</b> ${vehicle.regDate || "N/A"}</p>
+                    <p>🏢 <b>RTO Code:</b> ${vehicle.rtoCode || "N/A"}</p>
+                    <p>📅 <b>Emission Date:</b> ${vehicle.eDate || "N/A"}</p>
+                </div>
 
-            let data;
-            try {
-                data = JSON.parse(textData);  // ✅ Convert to JSON
-            } catch (error) {
-                console.error("❌ Invalid JSON response:", textData);
-                resultDiv.innerHTML = "<p style='color: red;'>Invalid response format!</p>";
-                return;
-            }
+                <div class="section">
+                    <h3>📢 STATUS</h3>
+                    <p>✅ <b>RC Status: </b>Y </p>
+                    <p>🕒 <b>Last Updated:</b> ${vehicle.lmDate || "N/A"}</p>
+                </div>
 
-            if (!data || Object.keys(data).length === 0) {
-                console.warn("⚠️ No data found!");
-                resultDiv.innerHTML = "<p style='color: red;'>No data found for this number plate!</p>";
-                return;
-            }
-
-            console.log("✅ Data Received:", data);  // ✅ Print data in console
-
-            resultDiv.innerHTML = `
-                <h2>🚗 Vehicle Details</h2>
-                <p>🔹 <strong>Registration Number:</strong> ${data.registrationNumber || "N/A"}</p>
-                <p>🔹 <strong>Owner Name:</strong> ${data.ownerName || "N/A"}</p>
-                <p>🔹 <strong>Manufacturer:</strong> ${data.manufacturer || "N/A"}</p>
-                <p>🔹 <strong>Model:</strong> ${data.model || "N/A"}</p>
-                <p>🔹 <strong>Fuel Type:</strong> ${data.fuelType || "N/A"}</p>
-                <p>🔹 <strong>Registration Date:</strong> ${data.registrationDate || "N/A"}</p>
-                <p>🔹 <strong>Address:</strong> ${data.address || "N/A"}</p>
+                <div class="powered-by">
+                    <p>⭒ <b>Powered By: <b>@VEHICLEINFOIND_BOT </p>
+                </div>
             `;
-        } catch (error) {
-            console.error("❌ Error fetching data:", error);
-            resultDiv.innerHTML = `<p style='color: red;'>Error fetching data. Please try again!</p>`;
+
+            resultContainer.innerHTML = detailsHTML;
+        } else {
+            document.getElementById("result").innerHTML = `<h3 style="color:red;">❌ Vehicle Not Found!</h3>`;
         }
-    });
-});
+    } catch (error) {
+        document.getElementById("result").innerHTML = `<h3 style="color:red;">⚠️ Error Fetching Data!</h3>`;
+    }
+}
