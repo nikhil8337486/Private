@@ -1,0 +1,37 @@
+/* Background Color Fix */
+body {
+    background-color: #E6CCFF !important; /* Light Purple */
+    color: black !important;
+}
+
+/* Container Box */
+.container {
+    background-color: #D8BFD8 !important; /* Medium Purple */
+    padding: 20px !important;
+    border-radius: 10px !important;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Input Box */
+input {
+    background-color: white !important;
+    color: black !important;
+    border: 2px solid #800080 !important;
+    border-radius: 5px !important;
+    padding: 10px !important;
+}
+
+/* Button */
+button {
+    background-color: #800080 !important; /* Dark Purple */
+    color: white !important;
+    border: none !important;
+    padding: 10px 20px !important;
+    border-radius: 5px !important;
+    font-weight: bold !important;
+}
+
+/* Button Hover Effect */
+button:hover {
+    background-color: #6A0DAD !important; /* Hover Color */
+}
